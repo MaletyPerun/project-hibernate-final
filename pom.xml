@@ -12,7 +12,8 @@
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>21</java.version>
+        <java.version>19</java.version>
+        <lof4j.version>2.20.0</lof4j.version>
     </properties>
 
 
@@ -56,6 +57,8 @@
             <artifactId>jackson-databind</artifactId>
             <version>2.15.1</version>
         </dependency>
+
+<!--        Jupiter-->
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
@@ -63,6 +66,12 @@
             <scope>test</scope>
         </dependency>
 
+<!--        logger-->
+        <dependency>
+            <groupId>org.apache.logging.log4j</groupId>
+            <artifactId>log4j-slf4j-impl</artifactId>
+            <version>${lof4j.version}</version>
+        </dependency>
     </dependencies>
 
     <build>
