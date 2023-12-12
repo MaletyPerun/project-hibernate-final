@@ -10,6 +10,8 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.*;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import ru.teplyakov.domain.City;
 import ru.teplyakov.domain.Country;
 import ru.teplyakov.domain.CountryLanguage;
