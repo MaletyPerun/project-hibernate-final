@@ -19,7 +19,6 @@
 
 
     <dependencies>
-
 <!--        hibernate-->
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core-jakarta -->
         <dependency>
@@ -66,31 +65,12 @@
             <scope>test</scope>
         </dependency>
 
-<!--        <dependency>-->
-<!--            <groupId>org.junit.platform</groupId>-->
-<!--            <artifactId>junit-platform-launcher</artifactId>-->
-<!--            <version>1.10.1</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
 <!--        logger-->
         <dependency>
             <groupId>org.apache.logging.log4j</groupId>
             <artifactId>log4j-slf4j-impl</artifactId>
             <version>${lof4j.version}</version>
         </dependency>
-
-<!--        <dependency>-->
-<!--            -->
-<!--        </dependency>-->
-        <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-failsafe-plugin -->
-<!--        <dependency>-->
-<!--            <groupId>org.apache.maven.plugins</groupId>-->
-<!--            <artifactId>maven-failsafe-plugin</artifactId>-->
-<!--            <version>3.1.2</version>-->
-<!--            <scope>test</scope>-->
-<!--        </dependency>-->
-
     </dependencies>
 
     <build>
@@ -122,41 +102,15 @@
                 </configuration>
             </plugin>
 
-<!--            <plugin>-->
-<!--                <groupId>org.apache.maven.plugins</groupId>-->
-<!--                <artifactId>maven-war-plugin</artifactId>-->
-<!--                <version>3.2.3</version>-->
-<!--                <configuration>-->
-<!--                    <failOnMissingWebXml>false</failOnMissingWebXml>-->
-<!--                </configuration>-->
-<!--            </plugin>-->
-
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
                 <version>3.1.2</version>
             </plugin>
+
             <plugin>
                 <artifactId>maven-failsafe-plugin</artifactId>
                 <version>3.1.2</version>
             </plugin>
-
-
-<!--            <plugin>-->
-<!--                <artifactId>maven-surefire-plugin</artifactId>-->
-<!--                <version>2.22.2</version>-->
-<!--                <dependencies>-->
-<!--                    <dependency>-->
-<!--&lt;!&ndash;                        <groupId>org.junit.platform</groupId>&ndash;&gt;-->
-<!--&lt;!&ndash;                        <artifactId>junit-platform-launcher</artifactId>&ndash;&gt;-->
-<!--&lt;!&ndash;                        <version>1.10.1</version>&ndash;&gt;-->
-
-<!--&lt;!&ndash;                        deprecated&ndash;&gt;-->
-<!--                        <groupId>org.junit.platform</groupId>-->
-<!--                        <artifactId>junit-platform-surefire-provider</artifactId>-->
-<!--                        <version>1.3.2</version>-->
-<!--                    </dependency>-->
-<!--                </dependencies>-->
-<!--            </plugin>-->
         </plugins>
     </build>
 </project>
