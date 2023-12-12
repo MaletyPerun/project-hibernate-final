@@ -10,8 +10,6 @@ import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.*;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
 import ru.teplyakov.domain.City;
 import ru.teplyakov.domain.Country;
 import ru.teplyakov.domain.CountryLanguage;
@@ -22,6 +20,7 @@ import java.util.List;
 import java.util.Set;
 
 import static org.junit.jupiter.api.Assertions.assertTrue;
+import static ru.teplyakov.util.Util.*;
 
 class MainTest {
 
@@ -72,15 +71,12 @@ class MainTest {
     @DisplayName("check time between redis and mysql")
     void checkTime() {
         Main main = new Main();
-        List<City> allCities = main.fetchData(main);
-        List<CityCountry> preparedData = main.transformData(allCities);
-        main.pushToRedis(preparedData);
+        List<City> allCities = fetchData(main);
+        List<CityCountry> preparedData = transformData(allCities);
+        pushToRedis(main, preparedData);
 
-        //закроем текущую сессию, чтоб точно делать запрос к БД, а не вытянуть данные из кэша
         sessionFactory.getCurrentSession().close();
 
-        //выбираем случайных 10 id городов
-        //так как мы не делали обработку невалидных ситуаций, используй существующие в БД id
         List<Integer> ids = List.of(3, 2545, 123, 4, 189, 89, 3458, 1189, 10, 102);
 
         long startRedis = System.currentTimeMillis();

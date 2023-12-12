@@ -21,7 +21,6 @@ public class CountryLanguage {
     @Type(type = "org.hibernate.type.NumericBooleanType")
     private Boolean isOfficial;
     @Column(name = "percentage")
-    // TODO: 10.12.2023 указать тип под BigDecimal
     private BigDecimal percentage;
 
     public CountryLanguage() {

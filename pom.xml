@@ -16,8 +16,6 @@
         <lof4j.version>2.20.0</lof4j.version>
     </properties>
 
-
-
     <dependencies>
 <!--        hibernate-->
         <!-- https://mvnrepository.com/artifact/org.hibernate/hibernate-core-jakarta -->
@@ -43,14 +41,14 @@
             <version>3.9.1</version>
         </dependency>
 
-<!--        для работы с Redis-->
+<!--        for Redis-->
         <dependency>
             <groupId>io.lettuce</groupId>
             <artifactId>lettuce-core</artifactId>
             <version>6.2.3.RELEASE</version>
         </dependency>
 
-<!--        для хранения данных в Redis (ключ-значение типа String)-->
+<!--        for save data in Redis (key-value String)-->
         <dependency>
             <groupId>com.fasterxml.jackson.core</groupId>
             <artifactId>jackson-databind</artifactId>
@@ -82,23 +80,6 @@
                 <configuration>
                     <source>${java.version}</source>
                     <target>${java.version}</target>
-                </configuration>
-            </plugin>
-
-<!--            https://stackoverflow.com/questions/9689793/cant-execute-jar-file-no-main-manifest-attribute-->
-            <plugin>
-                <!-- Build an executable JAR -->
-                <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-jar-plugin</artifactId>
-                <version>3.3.0</version>
-                <configuration>
-                    <archive>
-                        <manifest>
-<!--                            <addClasspath>true</addClasspath>-->
-<!--                            <classpathPrefix>lib/</classpathPrefix>-->
-                            <mainClass>ru.teplyakov.Main</mainClass>
-                        </manifest>
-                    </archive>
                 </configuration>
             </plugin>
 

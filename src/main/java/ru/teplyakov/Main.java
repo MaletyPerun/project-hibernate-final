@@ -1,12 +1,9 @@
 package ru.teplyakov;
 
-import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.lettuce.core.RedisClient;
 import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
-import io.lettuce.core.api.sync.RedisStringCommands;
-import org.hibernate.Session;
 import org.hibernate.SessionFactory;
 import org.hibernate.cfg.Configuration;
 import org.slf4j.Logger;
@@ -15,16 +12,13 @@ import ru.teplyakov.domain.City;
 import ru.teplyakov.domain.Country;
 import ru.teplyakov.domain.CountryLanguage;
 import ru.teplyakov.redis.CityCountry;
-import ru.teplyakov.redis.Language;
 import ru.teplyakov.repository.CityRepository;
 import ru.teplyakov.repository.CountryRepository;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Set;
-import java.util.stream.Collectors;
 
 import static java.util.Objects.nonNull;
+import static ru.teplyakov.util.Util.*;
 
 public class Main {
 
@@ -37,7 +31,7 @@ public class Main {
     private final CountryRepository countryRepository;
 
     public Main() {
-        logger.info("initialization");
+        logger.info("initialisation");
         sessionFactory = prepareRelationalDb();
         cityRepository = new CityRepository(sessionFactory);
         countryRepository = new CountryRepository(sessionFactory);
@@ -48,9 +42,9 @@ public class Main {
 
     public static void main(String[] args) {
         Main main = new Main();
-        List<City> allCities = main.fetchData(main);
-        List<CityCountry> preparedData = main.transformData(allCities);
-        main.pushToRedis(preparedData);
+        List<City> allCities = fetchData(main);
+        List<CityCountry> preparedData = transformData(allCities);
+        pushToRedis(main, preparedData);
         main.shutdown();
     }
 
@@ -68,73 +62,9 @@ public class Main {
 
         RedisClient redisClient = RedisClient.create(RedisURI.create("localhost", 6379));
         try (StatefulRedisConnection<String, String> connection = redisClient.connect()) {
-            System.out.println("\nConnected to Redis\n");
+            logger.info("\nConnected to Redis\n");
         }
         return redisClient;
-    }
-
-    List<City> fetchData(Main main) {
-        logger.info("fetch data");
-        try (Session session = main.sessionFactory.getCurrentSession()) {
-            List<City> allCities = new ArrayList<>();
-            List<CityCountry> preparedData = main.transformData(allCities);
-            main.pushToRedis(preparedData);
-            session.beginTransaction();
-
-            List<Country> countries = main.countryRepository.getAll();
-            int totalCount = main.cityRepository.getTotalCount();
-            int step = 500;
-            for (int i = 0; i < totalCount; i += step) {
-                allCities.addAll(main.cityRepository.getItems(i, step));
-            }
-            session.getTransaction().commit();
-            return allCities;
-        }
-    }
-
-    void pushToRedis(List<CityCountry> data) {
-        logger.info("push to redis");
-        try (StatefulRedisConnection<String, String> connection = redisClient.connect()) {
-            RedisStringCommands<String, String> sync = connection.sync();
-            for (CityCountry cityCountry : data) {
-                try {
-                    sync.set(String.valueOf(cityCountry.getId()), mapper.writeValueAsString(cityCountry));
-                } catch (JsonProcessingException e) {
-                    e.printStackTrace();
-                }
-            }
-
-        }
-    }
-
-    List<CityCountry> transformData(List<City> cities) {
-        logger.info("trans from data");
-        return cities.stream().map(city -> {
-            CityCountry cityCountry = new CityCountry();
-            cityCountry.setId(city.getId());
-            cityCountry.setName(city.getName());
-            cityCountry.setDistrict(city.getDistrict());
-            cityCountry.setPopulation(city.getPopulation());
-
-            Country country = city.getCountry();
-            cityCountry.setAlternativeCountryCode(country.getAlternativeCode());
-            cityCountry.setContinent(country.getContinent());
-            cityCountry.setCountryCode(country.getCode());
-            cityCountry.setCountryName(country.getName());
-            cityCountry.setCountryPopulation(country.getPopulation());
-            cityCountry.setCountryRegion(country.getRegion());
-            cityCountry.setCountrySurfaceArea(country.getSurfaceArea());
-            Set<CountryLanguage> countryLanguages = country.getLanguages();
-            Set<Language> languages = countryLanguages.stream().map(l -> {
-                Language language = new Language();
-                language.setLanguage(l.getLanguage());
-                language.setOfficial(l.getOfficial());
-                language.setPercentage(l.getPercentage());
-                return language;
-            }).collect(Collectors.toSet());
-            cityCountry.setLanguages(languages);
-            return cityCountry;
-        }).collect(Collectors.toList());
     }
 
     private void shutdown() {
@@ -145,5 +75,25 @@ public class Main {
         if (nonNull(redisClient)) {
             redisClient.shutdown();
         }
+    }
+
+    public SessionFactory getSessionFactory() {
+        return sessionFactory;
+    }
+
+    public RedisClient getRedisClient() {
+        return redisClient;
+    }
+
+    public ObjectMapper getMapper() {
+        return mapper;
+    }
+
+    public CityRepository getCityRepository() {
+        return cityRepository;
+    }
+
+    public CountryRepository getCountryRepository() {
+        return countryRepository;
     }
 }
