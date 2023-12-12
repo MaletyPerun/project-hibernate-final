@@ -7,12 +7,12 @@
     <groupId>ru.teplyakov</groupId>
     <artifactId>project-hibernate-final</artifactId>
     <version>1.0</version>
-    <packaging>war</packaging>
+    <packaging>jar</packaging>
 
     <properties>
         <project.build.sourceEncoding>UTF-8</project.build.sourceEncoding>
         <project.reporting.outputEncoding>UTF-8</project.reporting.outputEncoding>
-        <java.version>19</java.version>
+        <java.version>18</java.version>
         <lof4j.version>2.20.0</lof4j.version>
     </properties>
 
@@ -62,7 +62,7 @@
         <dependency>
             <groupId>org.junit.jupiter</groupId>
             <artifactId>junit-jupiter</artifactId>
-            <version>5.8.1</version>
+            <version>5.9.2</version>
             <scope>test</scope>
         </dependency>
 
@@ -80,6 +80,9 @@
             <version>${lof4j.version}</version>
         </dependency>
 
+<!--        <dependency>-->
+<!--            -->
+<!--        </dependency>-->
         <!-- https://mvnrepository.com/artifact/org.apache.maven.plugins/maven-failsafe-plugin -->
 <!--        <dependency>-->
 <!--            <groupId>org.apache.maven.plugins</groupId>-->
@@ -102,14 +105,31 @@
                 </configuration>
             </plugin>
 
+<!--            https://stackoverflow.com/questions/9689793/cant-execute-jar-file-no-main-manifest-attribute-->
             <plugin>
+                <!-- Build an executable JAR -->
                 <groupId>org.apache.maven.plugins</groupId>
-                <artifactId>maven-war-plugin</artifactId>
-                <version>3.2.3</version>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
                 <configuration>
-                    <failOnMissingWebXml>false</failOnMissingWebXml>
+                    <archive>
+                        <manifest>
+<!--                            <addClasspath>true</addClasspath>-->
+<!--                            <classpathPrefix>lib/</classpathPrefix>-->
+                            <mainClass>ru.teplyakov.Main</mainClass>
+                        </manifest>
+                    </archive>
                 </configuration>
             </plugin>
+
+<!--            <plugin>-->
+<!--                <groupId>org.apache.maven.plugins</groupId>-->
+<!--                <artifactId>maven-war-plugin</artifactId>-->
+<!--                <version>3.2.3</version>-->
+<!--                <configuration>-->
+<!--                    <failOnMissingWebXml>false</failOnMissingWebXml>-->
+<!--                </configuration>-->
+<!--            </plugin>-->
 
             <plugin>
                 <artifactId>maven-surefire-plugin</artifactId>
