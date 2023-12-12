@@ -1,5 +1,5 @@
 Manifest-Version: 1.0
-Main-Class: 
+Main-Class: ru.teplyakov.Main
 Class-Path: istack-commons-runtime-4.0.0.jar hibernate-commons-annotatio
  ns-5.1.2.Final.jar jakarta.activation-api-2.0.1.jar jakarta.activation-
  2.0.1.jar jackson-core-2.15.1.jar netty-codec-4.1.89.Final.jar hibernat
