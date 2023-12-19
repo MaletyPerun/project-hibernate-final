@@ -6,12 +6,12 @@ import io.lettuce.core.api.sync.RedisStringCommands;
 import org.hibernate.Session;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import ru.teplyakov.Main;
+import ru.teplyakov.AppConfig;
 import ru.teplyakov.domain.City;
 import ru.teplyakov.domain.Country;
 import ru.teplyakov.domain.CountryLanguage;
-import ru.teplyakov.redis.CityCountry;
-import ru.teplyakov.redis.Language;
+import ru.teplyakov.repository.redis.CityCountry;
+import ru.teplyakov.repository.redis.Language;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -52,32 +52,32 @@ public class Util {
         }).collect(Collectors.toList());
     }
 
-    public static List<City> fetchData(Main main) {
+    public static List<City> fetchData(AppConfig appConfig) {
         logger.info("fetch data");
-        try (Session session = main.getSessionFactory().getCurrentSession()) {
+        try (Session session = appConfig.getSessionFactory().getCurrentSession()) {
             List<City> allCities = new ArrayList<>();
             List<CityCountry> preparedData = transformData(allCities);
-            pushToRedis(main, preparedData);
+            pushToRedis(appConfig, preparedData);
             session.beginTransaction();
 
-            List<Country> countries = main.getCountryRepository().getAll();
-            int totalCount = main.getCityRepository().getTotalCount();
+            List<Country> countries = appConfig.getCountryRepository().getAll();
+            int totalCount = appConfig.getCityRepository().getTotalCount();
             int step = 500;
             for (int i = 0; i < totalCount; i += step) {
-                allCities.addAll(main.getCityRepository().getItems(i, step));
+                allCities.addAll(appConfig.getCityRepository().getItems(i, step));
             }
             session.getTransaction().commit();
             return allCities;
         }
     }
 
-    public static void pushToRedis(Main main, List<CityCountry> data) {
+    public static void pushToRedis(AppConfig appConfig, List<CityCountry> data) {
         logger.info("push to redis");
-        try (StatefulRedisConnection<String, String> connection = main.getRedisClient().connect()) {
+        try (StatefulRedisConnection<String, String> connection = appConfig.getRedisClient().connect()) {
             RedisStringCommands<String, String> sync = connection.sync();
             for (CityCountry cityCountry : data) {
                 try {
-                    sync.set(String.valueOf(cityCountry.getId()), main.getMapper().writeValueAsString(cityCountry));
+                    sync.set(String.valueOf(cityCountry.getId()), appConfig.getMapper().writeValueAsString(cityCountry));
                 } catch (JsonProcessingException e) {
                     e.printStackTrace();
                 }

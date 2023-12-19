@@ -8,13 +8,11 @@ import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisStringCommands;
 import org.hibernate.Session;
 import org.hibernate.SessionFactory;
-import org.hibernate.cfg.Configuration;
 import org.junit.jupiter.api.*;
 import ru.teplyakov.domain.City;
-import ru.teplyakov.domain.Country;
 import ru.teplyakov.domain.CountryLanguage;
-import ru.teplyakov.redis.CityCountry;
 import ru.teplyakov.repository.CityRepository;
+import ru.teplyakov.repository.redis.CityCountry;
 
 import java.util.List;
 import java.util.Set;
@@ -24,6 +22,7 @@ import static ru.teplyakov.util.Util.*;
 
 class MainTest {
 
+    public static AppConfig testConfig;
     public static SessionFactory sessionFactory;
     public static Session session = null;
     public static RedisClient redisClient;
@@ -32,20 +31,16 @@ class MainTest {
 
     @BeforeAll
     static void setup() {
-        sessionFactory = new Configuration()
-                .addAnnotatedClass(City.class)
-                .addAnnotatedClass(Country.class)
-                .addAnnotatedClass(CountryLanguage.class)
-                .buildSessionFactory();
+        testConfig = new AppConfig();
     }
 
     @BeforeEach
     void setupThis() {
-        session = sessionFactory.openSession();
+        session = testConfig.getSessionFactory().openSession();
         session.beginTransaction();
-        redisClient = prepareRedisClient();
-        mapper = new ObjectMapper();
-        cityRepository = new CityRepository(sessionFactory);
+        redisClient = testConfig.getRedisClient();
+        mapper = testConfig.getMapper();
+        cityRepository = testConfig.getCityRepository();
     }
 
     @AfterEach
@@ -55,8 +50,7 @@ class MainTest {
 
     @AfterAll
     static void tear() {
-        sessionFactory.close();
-        redisClient.close();
+        testConfig.close();
     }
 
     public RedisClient prepareRedisClient() {
@@ -70,12 +64,11 @@ class MainTest {
     @Test
     @DisplayName("check time between redis and mysql")
     void checkTime() {
-        Main main = new Main();
-        List<City> allCities = fetchData(main);
+        List<City> allCities = fetchData(testConfig);
         List<CityCountry> preparedData = transformData(allCities);
-        pushToRedis(main, preparedData);
+        pushToRedis(testConfig, preparedData);
 
-        sessionFactory.getCurrentSession().close();
+        testConfig.getSessionFactory().getCurrentSession().close();
 
         List<Integer> ids = List.of(3, 2545, 123, 4, 189, 89, 3458, 1189, 10, 102);
 
@@ -84,7 +77,7 @@ class MainTest {
         long stopRedis = System.currentTimeMillis();
 
         long startMysql = System.currentTimeMillis();
-        mysqlData(ids);
+        mySqlData(ids);
         long stopMysql = System.currentTimeMillis();
 
         System.out.printf("%s:\t%d ms\n", "Redis", (stopRedis - startRedis));
@@ -108,8 +101,8 @@ class MainTest {
         }
     }
 
-    public void mysqlData(List<Integer> ids) {
-        try (Session session = sessionFactory.getCurrentSession()) {
+    public void mySqlData(List<Integer> ids) {
+        try (Session session = testConfig.getSessionFactory().getCurrentSession()) {
             session.beginTransaction();
             for (Integer id : ids) {
                 City city = cityRepository.getById(id);

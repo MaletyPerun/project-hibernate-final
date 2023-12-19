@@ -1,4 +1,4 @@
-package ru.teplyakov.redis;
+package ru.teplyakov.repository.redis;
 
 import java.math.BigDecimal;
 
