@@ -14,6 +14,10 @@ import ru.teplyakov.domain.CountryLanguage;
 import ru.teplyakov.repository.CityRepository;
 import ru.teplyakov.repository.CountryRepository;
 
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.util.Properties;
+
 import static java.util.Objects.nonNull;
 
 public class AppConfig {
@@ -46,7 +50,18 @@ public class AppConfig {
     private RedisClient prepareRedisClient() {
         logger.info("prepare redis client");
 
-        RedisClient redisClient = RedisClient.create(RedisURI.create("localhost", 6379));
+        Properties properties = new Properties();
+        try (FileInputStream fis = new FileInputStream("src/main/resources/application.properties")) {
+            properties.load(fis);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        String host = properties.getProperty("application.redis.client");
+        String port = properties.getProperty("application.redis.port");
+        int portInt = Integer.parseInt(port);
+
+        RedisClient redisClient = RedisClient.create(RedisURI.create(host, portInt));
         try (StatefulRedisConnection<String, String> connection = redisClient.connect()) {
             logger.info("\nConnected to Redis\n");
         }

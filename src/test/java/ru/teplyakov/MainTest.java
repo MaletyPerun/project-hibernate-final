@@ -3,11 +3,9 @@ package ru.teplyakov;
 import com.fasterxml.jackson.core.JsonProcessingException;
 import com.fasterxml.jackson.databind.ObjectMapper;
 import io.lettuce.core.RedisClient;
-import io.lettuce.core.RedisURI;
 import io.lettuce.core.api.StatefulRedisConnection;
 import io.lettuce.core.api.sync.RedisStringCommands;
 import org.hibernate.Session;
-import org.hibernate.SessionFactory;
 import org.junit.jupiter.api.*;
 import ru.teplyakov.domain.City;
 import ru.teplyakov.domain.CountryLanguage;
@@ -23,8 +21,7 @@ import static ru.teplyakov.util.Util.*;
 class MainTest {
 
     public static AppConfig testConfig;
-    public static SessionFactory sessionFactory;
-    public static Session session = null;
+    public static Session session;
     public static RedisClient redisClient;
     public ObjectMapper mapper;
     public CityRepository cityRepository;
@@ -51,14 +48,6 @@ class MainTest {
     @AfterAll
     static void tear() {
         testConfig.close();
-    }
-
-    public RedisClient prepareRedisClient() {
-        RedisClient redisClient = RedisClient.create(RedisURI.create("localhost", 6379));
-        try (StatefulRedisConnection<String, String> connection = redisClient.connect()) {
-            System.out.println("\nConnected to Redis\n");
-        }
-        return redisClient;
     }
 
     @Test
