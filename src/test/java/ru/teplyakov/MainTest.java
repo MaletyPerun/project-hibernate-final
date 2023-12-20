@@ -47,6 +47,7 @@ class MainTest {
 
     @AfterAll
     static void tear() {
+        // TODO: 20.12.2023 break test on init class
         testConfig.close();
     }
 

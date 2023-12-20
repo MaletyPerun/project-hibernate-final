@@ -12,6 +12,7 @@ import static ru.teplyakov.util.Util.*;
 
 public class Main {
 
+    // TODO: 20.12.2023 include properties in Docker
     private static final Logger logger = LoggerFactory.getLogger(Main.class);
     private static AppConfig appConfig = null;
     public static void init() {
