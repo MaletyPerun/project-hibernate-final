@@ -28,7 +28,7 @@ class MainTest {
 
     @BeforeAll
     static void setup() {
-        testConfig = new AppConfig();
+        testConfig = new AppConfig("src/test/resources/test.properties");
     }
 
     @BeforeEach

@@ -27,15 +27,17 @@ public class AppConfig {
     private final RedisClient redisClient;
     private final ObjectMapper mapper;
 
+    private final String propSource;
     private static final Logger logger = LoggerFactory.getLogger(AppConfig.class);
 
-    public AppConfig() {
+    public AppConfig(String propSource) {
         logger.info("init app config");
         sessionFactory = prepareRelationalDb();
         cityRepository = new CityRepository(sessionFactory);
         countryRepository = new CountryRepository(sessionFactory);
         redisClient = prepareRedisClient();
         mapper = new ObjectMapper();
+        this.propSource = propSource;
     }
 
     private SessionFactory prepareRelationalDb() {
@@ -51,7 +53,7 @@ public class AppConfig {
         logger.info("prepare redis client");
 
         Properties properties = new Properties();
-        try (FileInputStream fis = new FileInputStream("src/main/resources/application.properties")) {
+        try (FileInputStream fis = new FileInputStream(propSource)) {
             properties.load(fis);
         } catch (IOException e) {
             e.printStackTrace();

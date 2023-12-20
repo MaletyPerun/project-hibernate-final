@@ -16,7 +16,7 @@ public class Main {
     private static AppConfig appConfig = null;
     public static void init() {
         logger.info("initialisation");
-        appConfig = new AppConfig();
+        appConfig = new AppConfig("src/main/resources/application.properties");
     }
 
     public static void main(String[] args) {
