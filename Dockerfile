@@ -1,8 +1,14 @@
 FROM eclipse-temurin:20
 
 COPY target/test-1.0.jar /test-1.0.jar
+COPY target/dependency /dependency
 
-CMD ["java", "-jar", "/test-1.0.jar"]
+#CMD ["java", "-jar", "/test-1.0.jar"]
+CMD ["java", "-cp", "/dependency/*:/test-1.0.jar", "ru.teplyakov.Main"]
+
+
+#узнать
+#Use 'docker scan' to run Snyk tests against images to find vulnerabilities and learn how to fix them
 
 #v.7 (доделать)
 #FROM maven:3.8.3-openjdk-11 AS build
