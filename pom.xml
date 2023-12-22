@@ -72,6 +72,14 @@
     </dependencies>
 
     <build>
+<!--        мешают при тесте в идеи-->
+<!--        <resources>-->
+<!--            &lt;!&ndash;            здесь явно указывается откуда брать зависимости&ndash;&gt;-->
+<!--            <resource>-->
+<!--                <directory>${project.build.directory}/dependency</directory>-->
+<!--                <targetPath>lib/</targetPath>-->
+<!--            </resource>-->
+<!--        </resources>-->
         <plugins>
             <plugin>
                 <groupId>org.apache.maven.plugins</groupId>
@@ -88,9 +96,52 @@
                 <version>3.1.2</version>
             </plugin>
 
+<!--            <plugin>-->
+<!--                <artifactId>maven-failsafe-plugin</artifactId>-->
+<!--                <version>3.1.2</version>-->
+<!--            </plugin>-->
+
             <plugin>
-                <artifactId>maven-failsafe-plugin</artifactId>
-                <version>3.1.2</version>
+                <!-- Build an executable JAR -->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-jar-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <archive>
+                        <manifest>
+                            <!--                            здесь указываются стартовый класс и название библиотек в манифесте: инструкция без источников-->
+                            <addClasspath>true</addClasspath>
+                            <classpathPrefix>lib/</classpathPrefix>
+                            <mainClass>ru.teplyakov.Main</mainClass>
+                        </manifest>
+                        <manifestEntries>
+                            <Class-Path>./</Class-Path>
+                            <!--                            <Rsrc-main-class>ru.teplyakov.Main</Rsrc-main-class>-->
+                        </manifestEntries>
+                    </archive>
+                </configuration>
+            </plugin>
+
+            <plugin>
+                <!--                для взаимодейтсвия с зависимосями в проекте-->
+                <groupId>org.apache.maven.plugins</groupId>
+                <artifactId>maven-dependency-plugin</artifactId>
+                <version>3.3.0</version>
+                <configuration>
+                    <!--                    указывается папка куда по итогу все собираться-->
+                    <outputDirectory>
+                        ${project.build.directory}/dependency
+                    </outputDirectory>
+                    <includeScope>compile</includeScope>
+                </configuration>
+                <executions>
+                    <execution>
+                        <phase>generate-resources</phase>
+                        <goals>
+                            <goal>copy-dependencies</goal>
+                        </goals>
+                    </execution>
+                </executions>
             </plugin>
         </plugins>
     </build>
