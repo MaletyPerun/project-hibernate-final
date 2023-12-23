@@ -32,6 +32,19 @@ public class Main {
 
     public Main() {
         logger.info("initialisation");
+
+        String mysqlPassword = System.getenv("MYSQL_PASSWORD");
+        if (mysqlPassword != null) {
+            // Переменная среды MYSQL_PASSWORD задана, используем ее значение
+            System.out.println("Значение MYSQL_PASSWORD: " + mysqlPassword);
+        } else {
+            // Переменная среды MYSQL_PASSWORD не задана, используем значение по умолчанию "mysql"
+            System.out.println("Переменная среды MYSQL_PASSWORD не задана, используем значение по умолчанию: mysql");
+        }
+
+
+
+
         sessionFactory = prepareRelationalDb();
         cityRepository = new CityRepository(sessionFactory);
         countryRepository = new CountryRepository(sessionFactory);
