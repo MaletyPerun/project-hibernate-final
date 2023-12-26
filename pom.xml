@@ -73,13 +73,13 @@
 
     <build>
 
-        <resources>
-<!--            здесь явно указывается откуда брать зависимости-->
-            <resource>
-                <directory>${project.build.directory}/dependency</directory>
-                <targetPath>lib/</targetPath>
-            </resource>
-        </resources>
+<!--        <resources>-->
+<!--&lt;!&ndash;            здесь явно указывается откуда брать зависимости&ndash;&gt;-->
+<!--            <resource>-->
+<!--                <directory>${project.build.directory}/dependency</directory>-->
+<!--                <targetPath>lib/</targetPath>-->
+<!--            </resource>-->
+<!--        </resources>-->
 
         <plugins>
             <plugin>
@@ -131,13 +131,13 @@
                 <configuration>
 <!--                    указывается папка куда по итогу все собираться-->
                     <outputDirectory>
-                        ${project.build.directory}/dependency
+                        ${project.build.directory}/lib
                     </outputDirectory>
                     <includeScope>compile</includeScope>
                 </configuration>
                 <executions>
                     <execution>
-                        <phase>generate-resources</phase>
+                        <phase>package</phase>
                         <goals>
                             <goal>copy-dependencies</goal>
                         </goals>

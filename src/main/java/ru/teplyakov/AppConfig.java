@@ -52,18 +52,18 @@ public class AppConfig {
     private RedisClient prepareRedisClient() {
         logger.info("prepare redis client");
 
-        Properties properties = new Properties();
-        try (FileInputStream fis = new FileInputStream(propSource)) {
-            properties.load(fis);
-        } catch (IOException e) {
-            e.printStackTrace();
-        }
+//        Properties properties = new Properties();
+//        try (FileInputStream fis = new FileInputStream(propSource)) {
+//            properties.load(fis);
+//        } catch (IOException e) {
+//            e.printStackTrace();
+//        }
+//
+//        String host = properties.getProperty("application.redis.client");
+//        String port = properties.getProperty("application.redis.port");
+//        int portInt = Integer.parseInt(port);
 
-        String host = properties.getProperty("application.redis.client");
-        String port = properties.getProperty("application.redis.port");
-        int portInt = Integer.parseInt(port);
-
-        RedisClient redisClient = RedisClient.create(RedisURI.create(host, portInt));
+        RedisClient redisClient = RedisClient.create(RedisURI.create("localhost", 6379));
         try (StatefulRedisConnection<String, String> connection = redisClient.connect()) {
             logger.info("\nConnected to Redis\n");
         }
